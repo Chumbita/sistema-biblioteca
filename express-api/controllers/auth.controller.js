@@ -9,49 +9,49 @@ const findByUsername = async (username) => {
   return row;
 };
 
-export const register = async(req, res) => {
-  const {username, name, surname, email, password} = req.body;
+export const register = async (req, res) => {
+  const { username, name, surname, email, password } = req.body;
 
   try {
     const user = await findByUsername(username);
     if (user) {
-      return res.json({ message: "El usuario ya existe"});
+      return res.json({ message: "El usuario ya existe" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const [result] = await pool.query (
+    const [result] = await pool.query(
       "INSERT INTO usuarios (usuario, nombre, apellido, email, contraseña) VALUES (?, ?, ?, ?, ?)",
       [username, name, surname, email, hashedPassword]
     );
-    res.json({message: "Usuario registrado exitosamente"});
-  } catch(e) {
+    res.json({ message: "Usuario registrado exitosamente" });
+  } catch (e) {
     res.json(e.message);
   }
-}
+};
 
-export const login = async(req, res) => {
-  const {username, name, surname, email, password} = req.body;
-  
+export const login = async (req, res) => {
+  const { username, name, surname, email, password } = req.body;
+
   try {
     const user = await findByUsername(username);
     if (!user) {
-      return res.json({message: "Usuario y/o contraseña son incorrects."});
+      return res.json({ message: "Usuario y/o contraseña son incorrects." });
     }
-    
+
     const isValid = await bcrypt.compare(password, user.password);
     if (!isValid) {
-      return res.json({message: "Usuario y/o contraseña son incorrectos"});
+      return res.json({ message: "Usuario y/o contraseña son incorrectos" });
     }
 
     const token = jwt.sign(
-      { uid: user.uid, username: user.username},
+      { uid: user.uid, username: user.username },
       process.env.JWT_SECRET,
-      {expiresIn: "1h"}
+      { expiresIn: "1h" }
     );
 
-    res.json({token: token});
-  }catch(e) {
+    res.json({ token: token });
+  } catch (e) {
     console.log(e.message);
   }
 };
