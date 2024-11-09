@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 07-11-2024 a las 20:27:25
+-- Tiempo de generación: 09-11-2024 a las 06:59:51
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -122,8 +122,8 @@ INSERT INTO `miembros` (`id`, `nombre`, `fecha_nacimiento`, `correo_electronico`
 CREATE TABLE `prestamos` (
   `id` int(11) NOT NULL,
   `fecha_prestamo` date NOT NULL,
-  `estado` tinyint(1) NOT NULL,
-  `fecha_devolucion` int(11) NOT NULL,
+  `estado` enum('vigente','concluido','','') NOT NULL,
+  `fecha_devolucion` date NOT NULL,
   `fk_miembros` int(11) NOT NULL,
   `fk_libros` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
@@ -133,26 +133,8 @@ CREATE TABLE `prestamos` (
 --
 
 INSERT INTO `prestamos` (`id`, `fecha_prestamo`, `estado`, `fecha_devolucion`, `fk_miembros`, `fk_libros`) VALUES
-(1, '2023-01-15', 1, 2023, 1, 1),
-(2, '2023-02-20', 0, 0, 2, 2),
-(3, '2023-03-05', 1, 2023, 3, 3),
-(4, '2023-03-25', 0, 0, 4, 4),
-(5, '2023-04-01', 1, 2023, 5, 5),
-(6, '2023-04-10', 0, 0, 6, 6),
-(7, '2023-05-05', 1, 2023, 7, 7),
-(8, '2023-05-18', 0, 0, 8, 8),
-(9, '2023-06-01', 1, 2023, 9, 9),
-(10, '2023-06-15', 0, 0, 10, 10),
-(11, '2023-07-10', 1, 2023, 2, 11),
-(12, '2023-08-01', 0, 0, 3, 12),
-(13, '2023-08-15', 1, 2023, 4, 13),
-(14, '2023-09-05', 0, 0, 5, 14),
-(15, '2023-09-20', 1, 2023, 6, 15),
-(16, '2023-10-01', 0, 0, 7, 16),
-(17, '2023-10-10', 1, 2023, 8, 17),
-(18, '2023-10-25', 0, 0, 9, 18),
-(19, '2023-11-01', 1, 2023, 10, 19),
-(20, '2023-11-15', 0, 0, 1, 20);
+(1, '2023-01-15', 'vigente', '0000-00-00', 1, 1),
+(2, '2023-02-20', 'concluido', '2023-03-03', 2, 2);
 
 -- --------------------------------------------------------
 
@@ -241,7 +223,7 @@ ALTER TABLE `miembros`
 -- AUTO_INCREMENT de la tabla `prestamos`
 --
 ALTER TABLE `prestamos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `secciones`
