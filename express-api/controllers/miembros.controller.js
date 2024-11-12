@@ -1,4 +1,4 @@
-import pool from "../config/db";
+import pool from "../config/db.js";
 
 const findAll = async (req, res) => {
   try {
@@ -12,7 +12,7 @@ const findAll = async (req, res) => {
 const findById = async (req, res) => {
   const { id } = req.params;
   try {
-    const [row] = await pool.query("*SELECT FROM miembros WHERE = ?", [id]);
+    const [row] = await pool.query("SELECT * FROM miembros WHERE id = ?", [id]);
     if (row.length === 1) {
       res.json(row[0]);
     } else {
@@ -36,9 +36,8 @@ const create = async (req, res) => {
   } = req.body;
   try {
     const [result] = await pool.query(
-      "*INSERT INTO miembros (id, nombre, fecha_nacimiento, correo_electronico, telefono, direccion, fecha_inicio_membresia, fecha_renovacion) VALUE (?, ?, ?, ?, ?)",
+      "INSERT INTO miembros (nombre, fecha_nacimiento, correo_electronico, telefono, direccion, fecha_inicio_membresia, fecha_renovacion) VALUE (?, ?, ?, ?, ?, ?, ?)",
       [
-        id,
         nombre,
         fecha_nacimiento,
         correo_electronico,
@@ -67,9 +66,8 @@ const update = async (req, res) => {
   } = req.body;
   try {
     const [result] = await pool.query(
-      "UPDATE miembros SET nombre = ?, fecha_nacimiento = ?, correo_electronico = ?, telefono, direccion = ?, fecha_inicio_membresia = ?, fecha_renovacion = ?",
+      "UPDATE miembros SET nombre = ?, fecha_nacimiento = ?, correo_electronico = ?, telefono = ?, direccion = ?, fecha_inicio_membresia = ?, fecha_renovacion = ? WHERE id = ?",
       [
-        id,
         nombre,
         fecha_nacimiento,
         correo_electronico,
@@ -77,6 +75,7 @@ const update = async (req, res) => {
         direccion,
         fecha_inicio_membresia,
         fecha_renovacion,
+        id
       ]
     );
     if (result.affectedRows === 1) {
@@ -105,4 +104,4 @@ const remove = async (req, res) => {
   }
 };
 
-export const clientesController = { findAll, findById, create, update, remove };
+export const miembrosController = { findAll, findById, create, update, remove };

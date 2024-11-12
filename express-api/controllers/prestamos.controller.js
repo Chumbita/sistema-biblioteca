@@ -25,14 +25,14 @@ export const crearPrestamo = async (req, res) => {
 };
 
 export const devolverLibro = async (req, res) => {
-  const { prestamoId } = req.params;
+  const { id } = req.params;
   const { fecha_devolucion } = req.body;
   const estado = "concluido";
 
   try {
     const [result] = await pool.query(
-      "UPDATE prestamo SET estado = ?, fecha_devolucion = ?, WHERE id = ?",
-      [estado, fecha_devolucion, prestamoId]
+      "UPDATE prestamos SET estado = ?, fecha_devolucion = ? WHERE id = ?",
+      [estado, fecha_devolucion, id]
     );
     if (result.affectedRows === 1) {
       res.json({ message: "Prestamo concluido" });

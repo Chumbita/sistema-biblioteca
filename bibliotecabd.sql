@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 09-11-2024 a las 06:59:51
+-- Tiempo de generación: 12-11-2024 a las 22:28:41
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -122,7 +122,7 @@ INSERT INTO `miembros` (`id`, `nombre`, `fecha_nacimiento`, `correo_electronico`
 CREATE TABLE `prestamos` (
   `id` int(11) NOT NULL,
   `fecha_prestamo` date NOT NULL,
-  `estado` enum('vigente','concluido','','') NOT NULL,
+  `estado` varchar(255) NOT NULL,
   `fecha_devolucion` date NOT NULL,
   `fk_miembros` int(11) NOT NULL,
   `fk_libros` int(11) NOT NULL
@@ -134,7 +134,8 @@ CREATE TABLE `prestamos` (
 
 INSERT INTO `prestamos` (`id`, `fecha_prestamo`, `estado`, `fecha_devolucion`, `fk_miembros`, `fk_libros`) VALUES
 (1, '2023-01-15', 'vigente', '0000-00-00', 1, 1),
-(2, '2023-02-20', 'concluido', '2023-03-03', 2, 2);
+(2, '2023-02-20', 'concluido', '2023-03-03', 2, 2),
+(3, '2023-03-03', 'concluido', '2023-05-03', 6, 12);
 
 -- --------------------------------------------------------
 
@@ -167,13 +168,20 @@ INSERT INTO `secciones` (`id`, `nombre_seccion`) VALUES
 --
 
 CREATE TABLE `usuarios` (
-  `id` int(11) DEFAULT NULL,
+  `id` int(11) NOT NULL,
   `usuario` varchar(255) NOT NULL,
   `nombre` varchar(255) NOT NULL,
   `apellido` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `contraseña` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
+
+--
+-- Volcado de datos para la tabla `usuarios`
+--
+
+INSERT INTO `usuarios` (`id`, `usuario`, `nombre`, `apellido`, `email`, `contraseña`) VALUES
+(2, 'mariocart1', 'Mario Andrés', 'Carrizo', 'mariocarrizo@gmail.com', '$2a$10$eG9vhN7PdtCIFMb0LqV91.pcx9THjrvikAADXRXi5350rY1Q7TU9.');
 
 --
 -- Índices para tablas volcadas
@@ -204,6 +212,12 @@ ALTER TABLE `secciones`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indices de la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
@@ -211,25 +225,31 @@ ALTER TABLE `secciones`
 -- AUTO_INCREMENT de la tabla `libros`
 --
 ALTER TABLE `libros`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT de la tabla `miembros`
 --
 ALTER TABLE `miembros`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `prestamos`
 --
 ALTER TABLE `prestamos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `secciones`
 --
 ALTER TABLE `secciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT de la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -1,4 +1,4 @@
-import pool from "../config/db";
+import pool from "../config/db.js";
 
 const findAll = async (req, res) => {
   try {
@@ -12,11 +12,11 @@ const findAll = async (req, res) => {
 const findByISBN = async (req, res) => {
   const { isbn } = req.params;
   try {
-    const [row] = await pool.query("SELECT * FROM libros WHERE ISBN", [isbn]);
-    if (row.lenght === 1) {
+    const [row] = await pool.query("SELECT * FROM libros WHERE ISBN = ?", [isbn]);
+    if (row.length === 1) {
       res.json(row[0]);
     } else {
-      res.json({ message: "Producto no encontrado" });
+      res.json({ message: "Libro no encontrado" });
     }
   } catch (e) {
     res.json(e.message);
@@ -36,7 +36,7 @@ const create = async (req, res) => {
   } = req.body;
   try {
     const [result] = await pool.query(
-      "INSERT INTO libros (titulo, autor, genero, ISBN, numero_estante, numero_repisa, fk_secciones, img) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO libros (titulo, autor, genero, ISBN, numero_estante, numero_repisa, fk_secciones, imagen) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
       [
         titulo,
         autor,
@@ -68,7 +68,7 @@ const update = async (req, res) => {
   } = req.body;
   try {
     const [result] = await pool.query(
-      "UPDATE libros SET titulo = ?, autor = ?, genero = ?, ISBN = ?, numero_estante = ?, numero_repisa = ?, fk_secciones = ?, img = ?, WHERE id = ?",
+      "UPDATE libros SET titulo = ?, autor = ?, genero = ?, ISBN = ?, numero_estante = ?, numero_repisa = ?, fk_secciones = ?, imagen = ? WHERE id = ?",
       [
         titulo,
         autor,
@@ -94,7 +94,7 @@ const update = async (req, res) => {
 const remove = async (req, res) => {
   const { id } = req.params;
   try {
-    const [result] = pool.query("DELETE FROM libros WHERE id = ?", [id]);
+    const [result] = await pool.query("DELETE FROM libros WHERE id = ?", [id]);
     if (result.affectedRows === 1) {
       res.json({ message: "Libro eliminado" });
     } else {

@@ -1,4 +1,4 @@
-import pool from "../config/db";
+import pool from "../config/db.js";
 
 const findAll = async (req, res) => {
   try {
@@ -27,8 +27,8 @@ const update = async (req, res) => {
   const { nombre_seccion } = req.body;
   try {
     const [result] = await pool.query(
-      "UPDATE secciones SET nombre_seccion = ?",
-      [nombre_seccion]
+      "UPDATE secciones SET nombre_seccion = ? WHERE id = ?",
+      [nombre_seccion, id]
     );
     if (result.affectedRows === 1) {
       res.json({ message: "Sección actualizada" });
@@ -47,7 +47,7 @@ const remove = async (req, res) => {
       id,
     ]);
     if (result.affectedRows === 1) {
-      res, json({ message: "Sección eliminada" });
+      res.json({ message: "Sección eliminada" });
     } else {
       res.json({ message: "Sección inexistente" });
     }
@@ -56,4 +56,4 @@ const remove = async (req, res) => {
   }
 };
 
-export const clientesController = { findAll, finById, create, update, remove };
+export const seccionesController = { findAll, create, update, remove };
