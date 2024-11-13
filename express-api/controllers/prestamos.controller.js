@@ -2,10 +2,22 @@ import pool from "../config/db.js";
 
 export const getPrestamos = async (req, res) => {
   try {
-    const rows = await pool.query("SELECT * FROM prestamos");
-    res.json(rows);
+    const [rows, fields] = await pool.query("SELECT * FROM prestamos");
+
+    // Filtra solo los datos de las filas, excluyendo metadatos y datos binarios
+    const filteredResults = rows.map((row) => ({
+      id: row.id,
+      fecha_prestamo: row.fecha_prestamo,
+      estado: row.estado,
+      fecha_devolucion: row.fecha_devolucion,
+      fk_miembros: row.fk_miembros,
+      fk_libros: row.fk_libros,
+    }));
+
+    // Devuelve solo los datos relevantes en formato JSON
+    res.json(filteredResults);
   } catch (e) {
-    res.json(e.message);
+    res.status(500).json({ error: e.message });
   }
 };
 
