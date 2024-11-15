@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 12-11-2024 a las 22:28:41
+-- Tiempo de generación: 14-11-2024 a las 18:07:33
 -- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.0.30
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,6 +20,42 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `bibliotecabd`
 --
+
+DELIMITER $$
+--
+-- Procedimientos
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_insertar_prestamo` (IN `idMiembro` INT, IN `idLibro` INT)   BEGIN
+    DECLARE prestamo_activo INT;
+    DECLARE libro_disponible VARCHAR(20);
+
+    SELECT COUNT(*) INTO prestamo_activo
+    FROM prestamos
+    WHERE fk_miembros = idMiembro AND estado = 'vigente';
+
+    IF prestamo_activo > 0 THEN
+        SELECT 'El miembro ya tiene un préstamo vigente' AS mensaje;
+    ELSE
+        SELECT estado INTO libro_disponible
+        FROM libros
+        WHERE id = idLibro;
+
+        IF libro_disponible = 'disponible' THEN
+            INSERT INTO prestamos (fecha_prestamo, estado, fk_miembros, fk_libros)
+            VALUES (NOW(), 'vigente', idMiembro, idLibro);
+            
+            UPDATE libros
+            SET estado = 'prestado'
+            WHERE id = idLibro;
+
+            SELECT 'Préstamo confirmado' AS mensaje;
+        ELSE
+            SELECT 'El libro no está disponible' AS mensaje;
+        END IF;
+    END IF;
+END$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -36,49 +72,50 @@ CREATE TABLE `libros` (
   `numero_estante` int(50) NOT NULL,
   `numero_repisa` int(50) NOT NULL,
   `fk_secciones` int(11) NOT NULL,
-  `imagen` varchar(255) DEFAULT NULL
+  `imagen` varchar(255) DEFAULT NULL,
+  `estado` varchar(20) DEFAULT 'disponible'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 
 --
 -- Volcado de datos para la tabla `libros`
 --
 
-INSERT INTO `libros` (`id`, `titulo`, `autor`, `genero`, `ISBN`, `numero_estante`, `numero_repisa`, `fk_secciones`, `imagen`) VALUES
-(1, 'La historia sin fin', 'Michael Ende', 'Fantasía', '1234567890123', 1, 1, 1, 'img/la_historia_sin_fin.jpg'),
-(2, 'El Hobbit', 'J.R.R. Tolkien', 'Fantasía', '1234567890124', 2, 2, 1, 'img/el_hobbit.jpg'),
-(3, 'Don Quijote de la Mancha', 'Miguel de Cervantes', 'Novela', '1234567890125', 3, 3, 1, 'img/don_quijote_de_la_mancha.jpg'),
-(4, 'Cien años de soledad', 'Gabriel García Márquez', 'Realismo mágico', '1234567890126', 4, 4, 1, 'img/cien_anos_de_soledad.jpg'),
-(5, 'Orgullo y prejuicio', 'Jane Austen', 'Romance', '1234567890127', 5, 5, 1, 'img/orgullo_y_prejuicio.jpg'),
-(6, 'Sapiens', 'Yuval Noah Harari', 'Historia', '2234567890123', 21, 1, 2, 'img/sapiens.jpg'),
-(7, 'Educated', 'Tara Westover', 'Biografía', '2234567890124', 22, 2, 2, 'img/educated.jpg'),
-(8, 'Homo Deus', 'Yuval Noah Harari', 'Filosofía', '2234567890125', 23, 3, 2, 'img/homo_deus.jpg'),
-(9, 'Pensar rápido, pensar despacio', 'Daniel Kahneman', 'Psicología', '2234567890126', 24, 4, 2, 'img/pensar_rapido_pensar_despacio.jpg'),
-(10, 'El poder de los hábitos', 'Charles Duhigg', 'Psicología', '2234567890127', 25, 5, 2, 'img/el_poder_de_los_habitos.jpg'),
-(11, 'Breve historia del tiempo', 'Stephen Hawking', 'Ciencia', '3234567890123', 41, 1, 3, 'img/breve_historia_del_tiempo.jpg'),
-(12, 'El gen egoísta', 'Richard Dawkins', 'Biología', '3234567890124', 42, 2, 3, 'img/el_gen_egoista.jpg'),
-(13, 'Cosmos', 'Carl Sagan', 'Astronomía', '3234567890125', 43, 3, 3, 'img/cosmos.jpg'),
-(14, 'Una breve historia de casi todo', 'Bill Bryson', 'Ciencia', '3234567890126', 44, 4, 3, 'img/una_breve_historia_de_casi_todo.jpg'),
-(15, 'La teoría del todo', 'Stephen Hawking', 'Física', '3234567890127', 45, 5, 3, 'img/la_teoria_del_todo.jpg'),
-(16, 'Clean Code', 'Robert C. Martin', 'Programación', '4234567890123', 61, 1, 4, 'img/clean_code.jpg'),
-(17, 'El arte de la programación', 'Donald Knuth', 'Programación', '4234567890124', 62, 2, 4, 'img/el_arte_de_la_programacion.jpg'),
-(18, 'Hooked', 'Nir Eyal', 'Tecnología', '4234567890125', 63, 3, 4, 'img/hooked.jpg'),
-(19, 'Lean Startup', 'Eric Ries', 'Emprendimiento', '4234567890126', 64, 4, 4, 'img/lean_startup.jpg'),
-(20, 'El dilema de los innovadores', 'Clayton M. Christensen', 'Negocios', '4234567890127', 65, 5, 4, 'img/el_dilema_de_los_innovadores.jpg'),
-(21, 'Meditaciones', 'Marco Aurelio', 'Filosofía', '5234567890123', 81, 1, 5, 'img/meditaciones.jpg'),
-(22, 'La República', 'Platón', 'Filosofía', '5234567890124', 82, 2, 5, 'img/la_republica.jpg'),
-(23, 'El contrato social', 'Jean-Jacques Rousseau', 'Política', '5234567890125', 83, 3, 5, 'img/el_contrato_social.jpg'),
-(24, 'Así habló Zaratustra', 'Friedrich Nietzsche', 'Filosofía', '5234567890126', 84, 4, 5, 'img/asi_hablo_zaratustra.jpg'),
-(25, 'Más allá del bien y del mal', 'Friedrich Nietzsche', 'Filosofía', '5234567890127', 85, 5, 5, 'img/mas_alla_del_bien_y_del_mal.jpg'),
-(26, 'La historia del arte', 'E.H. Gombrich', 'Arte', '6234567890123', 101, 1, 6, 'img/la_historia_del_arte.jpg'),
-(27, 'El arte de la pintura', 'Leonardo da Vinci', 'Arte', '6234567890124', 102, 2, 6, 'img/el_arte_de_la_pintura.jpg'),
-(28, 'La danza de la realidad', 'Alejandro Jodorowsky', 'Cultura', '6234567890125', 103, 3, 6, 'img/la_danza_de_la_realidad.jpg'),
-(29, 'El arte de la guerra', 'Sun Tzu', 'Estrategia', '6234567890126', 104, 4, 6, 'img/el_arte_de_la_guerra.jpg'),
-(30, 'La imagen', 'Roland Barthes', 'Cultura', '6234567890127', 105, 5, 6, 'img/la_imagen.jpg'),
-(31, 'El principito', 'Antoine de Saint-Exupéry', 'Infantil', '7234567890123', 121, 1, 7, 'img/el_principito.jpg'),
-(32, 'Alicia en el país de las maravillas', 'Lewis Carroll', 'Fantasía', '7234567890124', 122, 2, 7, 'img/alicia_en_el_pais_de_las_maravillas.jpg'),
-(33, 'Matilda', 'Roald Dahl', 'Infantil', '7234567890125', 123, 3, 7, 'img/matilda.jpg'),
-(34, 'Donde viven los monstruos', 'Maurice Sendak', 'Infantil', '7234567890126', 124, 4, 7, 'img/donde_viven_los_monstruos.jpg'),
-(35, 'Harry Potter y la piedra filosofal', 'J.K. Rowling', 'Fantasía', '7234567890127', 125, 5, 7, 'img/harry_potter_y_la_piedra_filosofal.jpg');
+INSERT INTO `libros` (`id`, `titulo`, `autor`, `genero`, `ISBN`, `numero_estante`, `numero_repisa`, `fk_secciones`, `imagen`, `estado`) VALUES
+(1, 'La historia sin fin', 'Michael Ende', 'Fantasía', '1234567890123', 1, 1, 1, 'img/la_historia_sin_fin.jpg', 'disponible'),
+(2, 'El Hobbit', 'J.R.R. Tolkien', 'Fantasía', '1234567890124', 2, 2, 1, 'img/el_hobbit.jpg', 'disponible'),
+(3, 'Don Quijote de la Mancha', 'Miguel de Cervantes', 'Novela', '1234567890125', 3, 3, 1, 'img/don_quijote_de_la_mancha.jpg', 'disponible'),
+(4, 'Cien años de soledad', 'Gabriel García Márquez', 'Realismo mágico', '1234567890126', 4, 4, 1, 'img/cien_anos_de_soledad.jpg', 'prestado'),
+(5, 'Orgullo y prejuicio', 'Jane Austen', 'Romance', '1234567890127', 5, 5, 1, 'img/orgullo_y_prejuicio.jpg', 'disponible'),
+(6, 'Sapiens', 'Yuval Noah Harari', 'Historia', '2234567890123', 21, 1, 2, 'img/sapiens.jpg', 'prestado'),
+(7, 'Educated', 'Tara Westover', 'Biografía', '2234567890124', 22, 2, 2, 'img/educated.jpg', 'disponible'),
+(8, 'Homo Deus', 'Yuval Noah Harari', 'Filosofía', '2234567890125', 23, 3, 2, 'img/homo_deus.jpg', 'disponible'),
+(9, 'Pensar rápido, pensar despacio', 'Daniel Kahneman', 'Psicología', '2234567890126', 24, 4, 2, 'img/pensar_rapido_pensar_despacio.jpg', 'disponible'),
+(10, 'El poder de los hábitos', 'Charles Duhigg', 'Psicología', '2234567890127', 25, 5, 2, 'img/el_poder_de_los_habitos.jpg', 'disponible'),
+(11, 'Breve historia del tiempo', 'Stephen Hawking', 'Ciencia', '3234567890123', 41, 1, 3, 'img/breve_historia_del_tiempo.jpg', 'disponible'),
+(12, 'El gen egoísta', 'Richard Dawkins', 'Biología', '3234567890124', 42, 2, 3, 'img/el_gen_egoista.jpg', 'disponible'),
+(13, 'Cosmos', 'Carl Sagan', 'Astronomía', '3234567890125', 43, 3, 3, 'img/cosmos.jpg', 'disponible'),
+(14, 'Una breve historia de casi todo', 'Bill Bryson', 'Ciencia', '3234567890126', 44, 4, 3, 'img/una_breve_historia_de_casi_todo.jpg', 'disponible'),
+(15, 'La teoría del todo', 'Stephen Hawking', 'Física', '3234567890127', 45, 5, 3, 'img/la_teoria_del_todo.jpg', 'disponible'),
+(16, 'Clean Code', 'Robert C. Martin', 'Programación', '4234567890123', 61, 1, 4, 'img/clean_code.jpg', 'disponible'),
+(17, 'El arte de la programación', 'Donald Knuth', 'Programación', '4234567890124', 62, 2, 4, 'img/el_arte_de_la_programacion.jpg', 'disponible'),
+(18, 'Hooked', 'Nir Eyal', 'Tecnología', '4234567890125', 63, 3, 4, 'img/hooked.jpg', 'disponible'),
+(19, 'Lean Startup', 'Eric Ries', 'Emprendimiento', '4234567890126', 64, 4, 4, 'img/lean_startup.jpg', 'disponible'),
+(20, 'El dilema de los innovadores', 'Clayton M. Christensen', 'Negocios', '4234567890127', 65, 5, 4, 'img/el_dilema_de_los_innovadores.jpg', 'disponible'),
+(21, 'Meditaciones', 'Marco Aurelio', 'Filosofía', '5234567890123', 81, 1, 5, 'img/meditaciones.jpg', 'disponible'),
+(22, 'La República', 'Platón', 'Filosofía', '5234567890124', 82, 2, 5, 'img/la_republica.jpg', 'disponible'),
+(23, 'El contrato social', 'Jean-Jacques Rousseau', 'Política', '5234567890125', 83, 3, 5, 'img/el_contrato_social.jpg', 'disponible'),
+(24, 'Así habló Zaratustra', 'Friedrich Nietzsche', 'Filosofía', '5234567890126', 84, 4, 5, 'img/asi_hablo_zaratustra.jpg', 'disponible'),
+(25, 'Más allá del bien y del mal', 'Friedrich Nietzsche', 'Filosofía', '5234567890127', 85, 5, 5, 'img/mas_alla_del_bien_y_del_mal.jpg', 'disponible'),
+(26, 'La historia del arte', 'E.H. Gombrich', 'Arte', '6234567890123', 101, 1, 6, 'img/la_historia_del_arte.jpg', 'disponible'),
+(27, 'El arte de la pintura', 'Leonardo da Vinci', 'Arte', '6234567890124', 102, 2, 6, 'img/el_arte_de_la_pintura.jpg', 'disponible'),
+(28, 'La danza de la realidad', 'Alejandro Jodorowsky', 'Cultura', '6234567890125', 103, 3, 6, 'img/la_danza_de_la_realidad.jpg', 'disponible'),
+(29, 'El arte de la guerra', 'Sun Tzu', 'Estrategia', '6234567890126', 104, 4, 6, 'img/el_arte_de_la_guerra.jpg', 'disponible'),
+(30, 'La imagen', 'Roland Barthes', 'Cultura', '6234567890127', 105, 5, 6, 'img/la_imagen.jpg', 'disponible'),
+(31, 'El principito', 'Antoine de Saint-Exupéry', 'Infantil', '7234567890123', 121, 1, 7, 'img/el_principito.jpg', 'disponible'),
+(32, 'Alicia en el país de las maravillas', 'Lewis Carroll', 'Fantasía', '7234567890124', 122, 2, 7, 'img/alicia_en_el_pais_de_las_maravillas.jpg', 'disponible'),
+(33, 'Matilda', 'Roald Dahl', 'Infantil', '7234567890125', 123, 3, 7, 'img/matilda.jpg', 'disponible'),
+(34, 'Donde viven los monstruos', 'Maurice Sendak', 'Infantil', '7234567890126', 124, 4, 7, 'img/donde_viven_los_monstruos.jpg', 'disponible'),
+(35, 'Harry Potter y la piedra filosofal', 'J.K. Rowling', 'Fantasía', '7234567890127', 125, 5, 7, 'img/harry_potter_y_la_piedra_filosofal.jpg', 'disponible');
 
 -- --------------------------------------------------------
 
@@ -135,7 +172,9 @@ CREATE TABLE `prestamos` (
 INSERT INTO `prestamos` (`id`, `fecha_prestamo`, `estado`, `fecha_devolucion`, `fk_miembros`, `fk_libros`) VALUES
 (1, '2023-01-15', 'vigente', '0000-00-00', 1, 1),
 (2, '2023-02-20', 'concluido', '2023-03-03', 2, 2),
-(3, '2023-03-03', 'concluido', '2023-05-03', 6, 12);
+(3, '2023-03-03', 'concluido', '2023-05-03', 6, 12),
+(4, '2024-11-14', 'vigente', '0000-00-00', 4, 4),
+(5, '2024-11-14', 'vigente', '0000-00-00', 5, 6);
 
 -- --------------------------------------------------------
 
@@ -237,7 +276,7 @@ ALTER TABLE `miembros`
 -- AUTO_INCREMENT de la tabla `prestamos`
 --
 ALTER TABLE `prestamos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `secciones`
