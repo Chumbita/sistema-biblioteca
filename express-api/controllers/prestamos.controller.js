@@ -56,8 +56,27 @@ export const devolverLibro = async (req, res) => {
   }
 };
 
+export const sp_insertar_prestamo = async (req, res) =>{
+  const {fk_libros: idLibro, fk_miembros: idMiembro} = req.body;
+
+  try{
+    const [result] = await pool.query(
+      "CALL sp_insertar_prestamo(?, ?)",
+      [idLibro, idMiembro]
+    );
+
+    const mensaje = result[0][0].mensaje;
+
+    res.json({message:mensaje});
+    
+  } catch (e){
+    res.status(500).json({message: e.message});
+  }
+};
+
 export const prestamosController = {
   getPrestamos,
   crearPrestamo,
   devolverLibro,
+  sp_insertar_prestamo,
 };

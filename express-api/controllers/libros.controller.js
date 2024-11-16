@@ -33,10 +33,11 @@ const create = async (req, res) => {
     numero_repisa,
     fk_secciones,
     img,
+    estado,
   } = req.body;
   try {
     const [result] = await pool.query(
-      "INSERT INTO libros (titulo, autor, genero, ISBN, numero_estante, numero_repisa, fk_secciones, imagen) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO libros (titulo, autor, genero, ISBN, numero_estante, numero_repisa, fk_secciones, imagen, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
         titulo,
         autor,
@@ -46,6 +47,7 @@ const create = async (req, res) => {
         numero_repisa,
         fk_secciones,
         img,
+        estado,
       ]
     );
     res.json({ id: result.insertId });
@@ -65,10 +67,11 @@ const update = async (req, res) => {
     numero_repisa,
     fk_secciones,
     img,
+    estado,
   } = req.body;
   try {
     const [result] = await pool.query(
-      "UPDATE libros SET titulo = ?, autor = ?, genero = ?, ISBN = ?, numero_estante = ?, numero_repisa = ?, fk_secciones = ?, imagen = ? WHERE id = ?",
+      "UPDATE libros SET titulo = ?, autor = ?, genero = ?, ISBN = ?, numero_estante = ?, numero_repisa = ?, fk_secciones = ?, imagen = ?, estado = ? WHERE id = ?",
       [
         titulo,
         autor,
@@ -78,6 +81,7 @@ const update = async (req, res) => {
         numero_repisa,
         fk_secciones,
         img,
+        estado,
         id,
       ]
     );
