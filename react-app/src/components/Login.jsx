@@ -49,10 +49,8 @@ const Login = () => {
             Ingresa a tu cuenta
           </h2>
         </div>
-
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Campo de Usuario */}
             <div>
               <label
                 htmlFor="username"
@@ -74,7 +72,6 @@ const Login = () => {
               </div>
             </div>
 
-            {/* Campo de Contraseña */}
             <div>
               <div className="flex items-center justify-between">
                 <label
@@ -106,7 +103,6 @@ const Login = () => {
               </div>
             </div>
 
-            {/* Botón de Enviar */}
             <div>
               <button
                 type="submit"
@@ -117,17 +113,16 @@ const Login = () => {
             </div>
           </form>
 
-          {/* Mensaje de Error */}
           {error && (
             <p className="mt-2 text-center text-sm text-red-500">{error}</p>
           )}
 
-          {/* Enlace a registro */}
           <p className="mt-10 text-center text-sm text-gray-500">
             No tienes una cuenta?{" "}
             <a
               href="#"
               className="font-semibold text-indigo-600 hover:text-indigo-500"
+              onClick={() => navigate("/register")}
             >
               Registrarse
             </a>

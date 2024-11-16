@@ -1,31 +1,29 @@
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  Navigate,
-} from "react-router-dom";
-import { AuthContext } from "./context/AuthProvider";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./context/AuthProvider";
 import Login from "./components/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
-import "./index.css";
-import { useContext } from "react";
 import Dashboard from "./components/Dashboard";
+import "./index.css";
+import Register from "./components/Register";
 
 function App() {
-  const { token } = useContext(AuthContext);
   return (
-    <Router>
-      <Routes>
-        <Route
-          path="/"
-          element={token ? <Navigate to="/dashboard" /> : <Login />}
-        />
-        <Route
-          path="/dashboard"
-          element={token ? <Dashboard /> : <Navigate to="/" />}
-        />
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 
