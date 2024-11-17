@@ -22,7 +22,7 @@ const navigation = [
   { name: "Libros", href: "/dashboard/libros", current: true },
   { name: "Géneros", href: "/dashboard/generos", current: false },
   { name: "Miembros", href: "/dashboard/miembros", current: false },
-  { name: "Prestamos", href: "/dashboard/pretamos", current: false },
+  { name: "Prestamos", href: "/dashboard/prestamos", current: false },
 ];
 const userNavigation = [
   { name: "Salir", href: "#" },
