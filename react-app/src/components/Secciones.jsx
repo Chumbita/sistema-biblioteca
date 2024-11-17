@@ -171,7 +171,7 @@ const Secciones = () => {
         onSubmit={handleEdit}
         handleChange={handleChange}
       />
-      <table className="table mt-10 ">
+      <table className="table table-striped table-hover mt-4 ">
         <thead>
           <tr>
             <th scope="col">ID</th>

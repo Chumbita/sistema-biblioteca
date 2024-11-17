@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/AuthProvider";
 import "bootstrap/dist/css/bootstrap.min.css";
+import PDFGenerador from "./PDFGenerador";
 
 const Libros = () => {
   const [books, setBooks] = useState([]);
@@ -37,6 +38,7 @@ const Libros = () => {
   return (
     <div className="bg-white">
       <h1 className="text-2xl font-bold text-gray-900">Libros</h1>
+      <PDFGenerador books={books}/>
       <div className=" max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
         <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
           {books.map((book) => (
