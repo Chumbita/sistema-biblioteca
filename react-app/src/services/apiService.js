@@ -1,4 +1,36 @@
 import { useContext } from "react";
+import { AuthContext } from "../context/AuthProvider";
+
+export const loginService = async (username, password) => {
+  const response = await fetch("http://localhost:3000/auth/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ username, password }),
+  });
+
+  const data = await response.json();
+  return data;
+};
+
+export const registerService = async (newUser) => {
+  try {
+    const response = await fetch("http://localhost:3000/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newUser),
+    });
+
+    const data = await response.json();
+    return data.message
+  }catch(e){
+    console.error(data.message);
+  }
+};
+
 
 export const apiFetch = async (url, options = {}) => {
   const { token } = useContext(AuthContext);
@@ -18,21 +50,7 @@ export const apiFetch = async (url, options = {}) => {
 
   return res.json();
 };
-// services/apiService.js
-export const loginService = async (username, password) => {
-  const response = await fetch("http://localhost:3000/auth/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ username, password }),
-  });
 
-  const data = await response.json();
-  return data;
-};
-
-// Funciones para libros
 export const fetchLibros = () => apiFetch("http://localhost:3000/libros");
 
 export const fetchLibroByISBN = (isbn) =>
@@ -55,7 +73,7 @@ export const deleteLirbo = (id) =>
     method: "DELETE",
   });
 
-// Funciones para Miembros
+
 export const fetchMiembros = () => apiFetch("http://localhost:3000/miembros");
 
 export const fetchMiembroById = (id) =>
@@ -78,7 +96,7 @@ export const deleteMiembro = (id) =>
     method: "DELETE",
   });
 
-// Funciones para Secciones
+
 export const fetchPrestamos = () => apiFetch("http://localhost:3000/prestamos");
 
 export const createPrestamo = (nuevoPrestamo) =>
@@ -93,7 +111,7 @@ export const updatePrestamo = (id, fechaDevolucion) =>
     body: JSON.stringify(fechaDevolucion),
   });
 
-// Funciones para Secciones
+
 export const fetchSecciones = () => apiFetch("http://localhost:3000/secciones");
 
 export const createSeccion = (nuevaSeccion) =>

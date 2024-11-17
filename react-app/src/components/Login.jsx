@@ -117,7 +117,7 @@ const Login = () => {
             <p className="mt-2 text-center text-sm text-red-500">{error}</p>
           )}
 
-          <p className="mt-10 text-center text-sm text-gray-500">
+          <p className="mt-4 text-center text-sm text-gray-500">
             No tienes una cuenta?{" "}
             <a
               href="#"
