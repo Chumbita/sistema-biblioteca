@@ -2,15 +2,26 @@ import pool from "../config/db.js";
 
 export const getPrestamos = async (req, res) => {
   try {
-    const [rows, fields] = await pool.query("SELECT * FROM prestamos");
+    const [rows] = await pool.query(`
+      SELECT 
+        p.id,
+        p.fecha_prestamo,
+        p.estado,
+        p.fecha_devolucion,
+        m.nombre AS nombre_miembro,
+        l.isbn AS isbn_libro
+      FROM prestamos p
+      JOIN miembros m ON p.fk_miembros = m.id
+      JOIN libros l ON p.fk_libros = l.id
+    `);
 
     const filteredResults = rows.map((row) => ({
       id: row.id,
       fecha_prestamo: row.fecha_prestamo,
       estado: row.estado,
       fecha_devolucion: row.fecha_devolucion,
-      fk_miembros: row.fk_miembros,
-      fk_libros: row.fk_libros,
+      nombre_miembro: row.nombre_miembro,
+      isbn_libro: row.isbn_libro,
     }));
 
     res.json(filteredResults);
@@ -18,6 +29,7 @@ export const getPrestamos = async (req, res) => {
     res.status(500).json({ error: e.message });
   }
 };
+
 
 export const sp_insertar_prestamo = async (req, res) =>{
   const {fk_miembros: idMiembro, fk_libros: idLibro} = req.body;
