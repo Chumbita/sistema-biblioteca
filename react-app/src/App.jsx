@@ -6,7 +6,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Dashboard from "./components/Dashboard";
 import "./index.css";
 import Register from "./components/Register";
-import Generos from "./components/Generos.jsx";
+import Secciones from "./components/Secciones.jsx";
 import Miembros from "./components/Miembros.jsx";
 import Prestamos from "./components/Prestamos.jsx";
 import { Navigate } from "react-router-dom";
@@ -30,7 +30,7 @@ function App() {
             >
             <Route index element={<Navigate to="libros" replace />} />
             <Route path="libros" element={<Libros />} />
-            <Route path="generos" element={<Generos />} />
+            <Route path="secciones" element={<Secciones />} />
             <Route path="miembros" element={<Miembros />} />
             <Route path="prestamos" element={<Prestamos />} />
          

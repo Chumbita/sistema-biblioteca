@@ -11,17 +11,14 @@
   font-size: 1.2rem;
   color: rgb(3, 3, 62);
   padding-right: 10px;
+  cursor: pointer;
 }
 
 .edit-delete {
   color: rgb(210, 17, 17);
- 
-}
-
-.btn-icon{
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
+  font-size: 1.2rem;
   cursor: pointer;
 }
+
+
 

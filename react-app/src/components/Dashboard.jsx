@@ -20,7 +20,7 @@ const user = {
 };
 const navigation = [
   { name: "Libros", href: "/dashboard/libros", current: true },
-  { name: "Géneros", href: "/dashboard/generos", current: false },
+  { name: "Secciones", href: "/dashboard/secciones", current: false },
   { name: "Miembros", href: "/dashboard/miembros", current: false },
   { name: "Prestamos", href: "/dashboard/prestamos", current: false },
 ];
