@@ -40,6 +40,7 @@ export const devolverLibro = async (req, res) => {
   const { id } = req.params;
   const { fecha_devolucion } = req.body;
   const estado = "concluido";
+  
 
   try {
     const [result] = await pool.query(

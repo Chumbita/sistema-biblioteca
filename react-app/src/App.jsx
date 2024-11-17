@@ -9,6 +9,7 @@ import Register from "./components/Register";
 import Generos from "./components/Generos.jsx";
 import Miembros from "./components/Miembros.jsx";
 import Prestamos from "./components/Prestamos.jsx";
+import { Navigate } from "react-router-dom";
 
 function App() {
   return (

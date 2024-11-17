@@ -35,6 +35,10 @@ export const registerService = async (newUser) => {
 export const apiFetch = async (url, options = {}) => {
   const { token } = useContext(AuthContext);
 
+  if (!token) {
+    throw new Error("No token available.");
+  }
+
   const headers = {
     "Content-Type": "application/json",
     Authorization: `Bearer ${token}`,
