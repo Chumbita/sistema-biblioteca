@@ -1,9 +1,13 @@
 import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/AuthProvider";
 import "bootstrap/dist/css/bootstrap.min.css";
+<<<<<<< HEAD
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import Modal from "./Modal";
+=======
+import PDFGenerador from "./PDFGenerador";
+>>>>>>> fd018b6e2783d9c55adcddbe311e9832b9b9846d
 
 const Libros = () => {
   const { token } = useContext(AuthContext);
@@ -152,6 +156,7 @@ const Libros = () => {
   return (
     <div className="bg-white">
       <h1 className="text-2xl font-bold text-gray-900">Libros</h1>
+<<<<<<< HEAD
       <span className="sm:ml-3 ">
         <button
           type="button"
@@ -164,6 +169,9 @@ const Libros = () => {
           Agregar
         </button>
       </span>
+=======
+      <PDFGenerador books={books}/>
+>>>>>>> fd018b6e2783d9c55adcddbe311e9832b9b9846d
       <div className=" max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
         <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
           {books.map((book) => (
