@@ -1,13 +1,10 @@
 import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/AuthProvider";
 import "bootstrap/dist/css/bootstrap.min.css";
-<<<<<<< HEAD
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import Modal from "./Modal";
-=======
 import PDFGenerador from "./PDFGenerador";
->>>>>>> fd018b6e2783d9c55adcddbe311e9832b9b9846d
 
 const Libros = () => {
   const { token } = useContext(AuthContext);
@@ -16,7 +13,8 @@ const Libros = () => {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [formData, setFormData] = useState({});
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [isAddModalOpen, setAddModalOpen] = useState(false);
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
 
   const inputs = [
     { name: "titulo", label: "Titulo", type: "text" },
@@ -25,6 +23,8 @@ const Libros = () => {
     { name: "ISBN", label: "ISBN", type: "text" },
     { name: "numero_estante", label: "Numero de estante", type: "number" },
     { name: "numero_repisa", label: "Numero de repisa", type: "number" },
+    { name: "fk_secciones", label: "fk_secciones", type: "number" },
+    { name: "imagen", label: "imagen", type: "text" },
     { name: "estado", label: "Disponibilidad", type: "text" },
   ];
 
@@ -103,9 +103,40 @@ const Libros = () => {
     }
   };
 
-  const handleOpenModal = () => setModalOpen(true);
-  const handleCloseModal = () => setModalOpen(false);
+  const handleOpenModalAdd = () => setAddModalOpen(true);
+  const handleCloseModalAdd = () => setAddModalOpen(false);
 
+  const handbleSubmit = async () => {
+    if (!token) {
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:3000/libros", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+      setBooks((prevBooks) => [...prevBooks, { ...formData, id: data.id }]);
+      setFormData({});
+      setMessage("Libro creado exitosamente");
+      handleCloseModalAdd();
+      console.log(data);
+    } catch (e) {
+      setError([data.message]);
+    }
+  };
+
+  const handleOpenModalEdit = () => setEditModalOpen(true);
+  const handleCloseModalEdit = () => {
+    setEditModalOpen(false);
+    setFormData({});
+  };
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
@@ -114,7 +145,7 @@ const Libros = () => {
   const handleEditClick = (book) => {
     setSelectedBook(book);
     setFormData(book);
-    setModalOpen(true);
+    handleOpenModalEdit(true);
   };
 
   const handleEdit = async () => {
@@ -132,7 +163,6 @@ const Libros = () => {
           body: JSON.stringify(formData),
         }
       );
-
       const data = await response.json();
 
       if (response.ok) {
@@ -147,7 +177,7 @@ const Libros = () => {
         setError(data.message);
       }
 
-      handleCloseModal();
+      handleCloseModalEdit();
     } catch (error) {
       setError(error.message);
     }
@@ -156,22 +186,16 @@ const Libros = () => {
   return (
     <div className="bg-white">
       <h1 className="text-2xl font-bold text-gray-900">Libros</h1>
-<<<<<<< HEAD
-      <span className="sm:ml-3 ">
-        <button
-          type="button"
-          // onClick={handleOpenModal}
-          onClick={() =>
-            window.open("https://www.instagram.com/chumbitaluciano/", "_blank")
-          }
-          className="inline-flex mt-4 items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        >
-          Agregar
-        </button>
-      </span>
-=======
-      <PDFGenerador books={books}/>
->>>>>>> fd018b6e2783d9c55adcddbe311e9832b9b9846d
+
+      <button
+        type="button"
+        onClick={handleOpenModalAdd}
+        className="btn btn btn-dark mt-4"
+      >
+        Agregar
+      </button>
+
+      <PDFGenerador books={books} />
       <div className=" max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
         <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
           {books.map((book) => (
@@ -200,17 +224,25 @@ const Libros = () => {
           ))}
         </div>
       </div>
-
+      <Modal
+        title="Agregar un nuevo libro"
+        isOpen={isAddModalOpen}
+        inputs={inputs}
+        formData={formData}
+        onClose={handleCloseModalAdd}
+        onSubmit={handbleSubmit}
+        handleChange={handleChange}
+      />
       {/* Modal de detalles del libro */}
       {selectedBook && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg max-w-md w-full">
             <Modal
-              title="Editar miembro"
-              isOpen={isModalOpen}
+              title="Editar libro"
+              isOpen={isEditModalOpen}
               inputs={inputs}
               formData={formData}
-              onClose={handleCloseModal}
+              onClose={handleCloseModalEdit}
               onSubmit={handleEdit}
               handleChange={handleChange}
             />

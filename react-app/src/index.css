@@ -6,7 +6,6 @@
   padding-left: 12px;
 }
 
-
 .edit-icon {
   font-size: 1.2rem;
   color: rgb(3, 3, 62);
@@ -20,5 +19,6 @@
   cursor: pointer;
 }
 
-
-
+.btn {
+  margin-right: 10px;
+}

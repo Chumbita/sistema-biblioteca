@@ -12,7 +12,9 @@ const findAll = async (req, res) => {
 const findByISBN = async (req, res) => {
   const { isbn } = req.params;
   try {
-    const [row] = await pool.query("SELECT * FROM libros WHERE ISBN = ?", [isbn]);
+    const [row] = await pool.query("SELECT * FROM libros WHERE ISBN = ?", [
+      isbn,
+    ]);
     if (row.length === 1) {
       res.json(row[0]);
     } else {
@@ -28,11 +30,11 @@ const create = async (req, res) => {
     titulo,
     autor,
     genero,
-    isbn,
+    ISBN,
     numero_estante,
     numero_repisa,
     fk_secciones,
-    img,
+    imagen,
     estado,
   } = req.body;
   try {
@@ -42,11 +44,11 @@ const create = async (req, res) => {
         titulo,
         autor,
         genero,
-        isbn,
+        ISBN,
         numero_estante,
         numero_repisa,
         fk_secciones,
-        img,
+        imagen,
         estado,
       ]
     );
@@ -62,11 +64,11 @@ const update = async (req, res) => {
     titulo,
     autor,
     genero,
-    isbn,
+    ISBN,
     numero_estante,
     numero_repisa,
     fk_secciones,
-    img,
+    imagen,
     estado,
   } = req.body;
   try {
@@ -76,11 +78,11 @@ const update = async (req, res) => {
         titulo,
         autor,
         genero,
-        isbn,
+        ISBN,
         numero_estante,
         numero_repisa,
         fk_secciones,
-        img,
+        imagen,
         estado,
         id,
       ]
