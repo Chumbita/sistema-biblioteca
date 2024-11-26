@@ -5,13 +5,13 @@ import { AuthContext } from "../context/AuthProvider";
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [errores, setError] = useState([]);
   const { setToken } = useContext(AuthContext);
-  const navigate = useNavigate(); // Para redireccionar
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // Limpiar error al intentar iniciar sesión
+    setError("");
 
     try {
       const response = await fetch("http://localhost:3000/auth/login", {
@@ -25,11 +25,11 @@ const Login = () => {
       const data = await response.json();
 
       if (response.ok && data.token) {
-        localStorage.setItem("token", data.token); // Guardar token en localStorage
-        setToken(data.token); // Guardar token en el contexto
-        navigate("/dashboard"); // Redirigir a dashboard
+        localStorage.setItem("token", data.token);
+        setToken(data.token);
+        navigate("/dashboard");
       } else {
-        setError(data.message); // Mostrar error si las credenciales son incorrectas
+        setError([data.message]);
       }
     } catch (error) {
       setError("Error de servidor. Intenta más tarde.");
@@ -66,7 +66,7 @@ const Login = () => {
                   required
                   autoComplete="username"
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)} // Actualizar el estado del usuario
+                  onChange={(e) => setUsername(e.target.value)}
                   className="text block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
                 />
               </div>
@@ -84,9 +84,7 @@ const Login = () => {
                   <a
                     href="#"
                     className="font-semibold text-indigo-600 hover:text-indigo-500"
-                  >
-                    
-                  </a>
+                  ></a>
                 </div>
               </div>
               <div className="mt-2">
@@ -97,7 +95,7 @@ const Login = () => {
                   required
                   autoComplete="current-password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)} // Actualizar el estado de la contraseña
+                  onChange={(e) => setPassword(e.target.value)}
                   className="text block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
                 />
               </div>
@@ -113,8 +111,12 @@ const Login = () => {
             </div>
           </form>
 
-          {error && (
-            <p className="mt-2 text-center text-sm text-red-500">{error}</p>
+          {errores.length > 0 && (
+            <div className="mt-4 text-center text-sm text-red-500">
+              {errores.map((error) => (
+                <p>{error}</p>
+              ))}
+            </div>
           )}
 
           <p className="mt-4 text-center text-sm text-gray-500">
