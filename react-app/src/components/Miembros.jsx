@@ -18,11 +18,7 @@ const Miembros = () => {
     { name: "telefono", label: "Nro Teléfono", type: "text" },
     { name: "direccion", label: "Dirección", type: "text" },
     { name: "fecha_nacimiento", label: "Nacimiento", type: "date" },
-    {
-      name: "fecha_inicio_membresia",
-      label: "Inicio de membresia",
-      type: "date",
-    },
+    { name: "fecha_inicio_membresia",label: "Inicio de membresia",type: "date",},
     { name: "fecha_renovacion", label: "Renovación", type: "date" },
   ];
 

@@ -32,7 +32,7 @@ const Login = () => {
         setError([data.message]);
       }
     } catch (error) {
-      setError("Error de servidor. Intenta más tarde.");
+      setError(["Error de servidor. Intenta más tarde."]);
     }
   };
 
